@@ -133,13 +133,11 @@ CREATE TABLE Rosters (
     team_id       INT         NOT NULL,
     artist_id     INT         NOT NULL,
     acquired_at   DATETIME    NOT NULL,
-    season_id     INT         NOT NULL,
     released_at   DATETIME    NULL,
     acquired_via  VARCHAR(20) NOT NULL,         -- e.g. 'draft', 'pickup'
     PRIMARY KEY (team_id, artist_id, acquired_at),
     FOREIGN KEY (team_id)   REFERENCES Team(team_id),
     FOREIGN KEY (artist_id) REFERENCES Artist(artist_id),
-    FOREIGN KEY (season_id) REFERENCES Season(season_id),
     CHECK (acquired_via IN ('draft', 'pickup')),
     CHECK (released_at IS NULL OR released_at > acquired_at)
 );

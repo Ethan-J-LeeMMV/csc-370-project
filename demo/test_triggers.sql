@@ -1,4 +1,3 @@
--- run this after schema1.sql and triggers.sql on a fresh database
 USE streamteam;
 
 DROP TABLE IF EXISTS TestResult;
@@ -117,22 +116,22 @@ CALL run_test('UNIQUE', 'same artist drafted twice', 'reject',
 -- R9 rosters
 -- test 11: put artist 1 on team A, should work
 CALL run_test('R9', 'put artist 1 on team A', 'accept',
-    'INSERT INTO Rosters VALUES (1, 1, ''2026-10-30 10:00:00'', 1, NULL, ''draft'')');
+    'INSERT INTO Rosters VALUES (1, 1, ''2026-10-30 10:00:00'', NULL, ''draft'')');
 -- test 12: put artist 1 on team B too (same league), should fail
 CALL run_test('R9', 'put artist 1 on team B in same league', 'reject',
-    'INSERT INTO Rosters VALUES (2, 1, ''2026-10-30 10:00:00'', 1, NULL, ''draft'')');
+    'INSERT INTO Rosters VALUES (2, 1, ''2026-10-30 10:00:00'', NULL, ''draft'')');
 -- test 13: put artist 1 on a team in a different league, should work
 CALL run_test('R9', 'put artist 1 on a team in a different league', 'accept',
-    'INSERT INTO Rosters VALUES (5, 1, ''2026-10-30 10:00:00'', 2, NULL, ''draft'')');
+    'INSERT INTO Rosters VALUES (5, 1, ''2026-10-30 10:00:00'', NULL, ''draft'')');
 -- test 14: fill up team A to 3 artists, should work
 CALL run_test('R9', 'fill team A roster to roster_size', 'accept',
-    'INSERT INTO Rosters VALUES (1, 2, ''2026-10-30 10:00:00'', 1, NULL, ''draft''), (1, 3, ''2026-10-30 10:00:00'', 1, NULL, ''draft'')');
+    'INSERT INTO Rosters VALUES (1, 2, ''2026-10-30 10:00:00'', NULL, ''draft''), (1, 3, ''2026-10-30 10:00:00'', NULL, ''draft'')');
 -- test 15: try adding a 4th artist to team A, should fail
 CALL run_test('R9', 'add artist to a full roster', 'reject',
-    'INSERT INTO Rosters VALUES (1, 4, ''2026-10-30 10:00:00'', 1, NULL, ''draft'')');
+    'INSERT INTO Rosters VALUES (1, 4, ''2026-10-30 10:00:00'', NULL, ''draft'')');
 -- test 16: released date is before acquired date, should fail
 CALL run_test('CHECK', 'released before acquired', 'reject',
-    'INSERT INTO Rosters VALUES (3, 5, ''2026-10-30 10:00:00'', 1, ''2026-10-29 10:00:00'', ''draft'')');
+    'INSERT INTO Rosters VALUES (3, 5, ''2026-10-30 10:00:00'', ''2026-10-29 10:00:00'', ''draft'')');
 
 -- team A drops artist 1 and team B grabs them
 -- test 17: team A releases artist 1, should work
@@ -140,13 +139,13 @@ CALL run_test('R9', 'release artist 1 from team A', 'accept',
     'UPDATE Rosters SET released_at = ''2026-11-02 08:00:00'' WHERE team_id = 1 AND artist_id = 1');
 -- test 18: team B picks up artist 1 now that theyre free, should work
 CALL run_test('R9', 'team B picks up released artist 1', 'accept',
-    'INSERT INTO Rosters VALUES (2, 1, ''2026-11-02 09:00:00'', 1, NULL, ''pickup'')');
+    'INSERT INTO Rosters VALUES (2, 1, ''2026-11-02 09:00:00'', NULL, ''pickup'')');
 -- test 19: try putting artist 1 back on team A when team B has them, should fail
 CALL run_test('R9', 'un-release artist 1 back onto team A', 'reject',
     'UPDATE Rosters SET released_at = NULL WHERE team_id = 1 AND artist_id = 1');
 -- test 20: team A uses the open spot for artist 4, should work
 CALL run_test('R9', 'team A fills open spot with artist 4', 'accept',
-    'INSERT INTO Rosters VALUES (1, 4, ''2026-11-02 09:00:00'', 1, NULL, ''pickup'')');
+    'INSERT INTO Rosters VALUES (1, 4, ''2026-11-02 09:00:00'', NULL, ''pickup'')');
 
 -- R10 lineups (team A has artists 2, 3, 4 and active_slots is 2)
 -- test 21: team A tries to start artist 1 who isnt on their roster anymore, should fail
